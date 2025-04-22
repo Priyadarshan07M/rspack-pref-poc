@@ -1,6 +1,6 @@
-// rspack.config.js
 const path = require('path');
 const { rspack } = require('@rspack/core');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -9,6 +9,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist-rspack'),
     filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].chunk.js',
     clean: true
   },
   module: {
@@ -58,16 +59,40 @@ module.exports = {
   },
   plugins: [
     new rspack.HtmlRspackPlugin({
-      template: './public/index.html'
-    })
+      template: './public/index.html',
+      minify: true
+    }),
+    new CompressionPlugin({
+      algorithm: 'gzip',
+      test: /\.(js|css|html|svg)$/,
+      threshold: 10240,
+      minRatio: 0.8,
+    }),
   ],
   optimization: {
     splitChunks: {
       chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 20000,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            return `npm.${packageName.replace('@', '')}`;
+          },
+        },
+      },
     },
     usedExports: true,
     sideEffects: true,
     minimize: true,
-    concatenateModules: true
+    concatenateModules: true,
+    runtimeChunk: 'single',
+  },
+  performance: {
+    hints: 'warning',
+    maxEntrypointSize: 512000,
+    maxAssetSize: 512000,
   }
 };
