@@ -17,7 +17,7 @@ module.exports = {
         use: {
           loader: 'builtin:swc-loader',
           options: {
-            sourceMap: true,
+            sourceMap: false,
             jsc: {
               parser: {
                 syntax: 'typescript',
