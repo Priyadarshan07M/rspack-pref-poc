@@ -57,5 +57,9 @@ module.exports = {
     splitChunks: {
       chunks: 'all',
     },
+    usedExports: true,
+    sideEffects: true,
+    minimize: true,
+    concatenateModules: true
   }
 };

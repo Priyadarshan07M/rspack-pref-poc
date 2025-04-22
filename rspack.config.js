@@ -5,6 +5,7 @@ const { rspack } = require('@rspack/core');
 module.exports = {
   mode: 'production',
   entry: './src/index.tsx',
+  devtool: false,
   output: {
     path: path.resolve(__dirname, 'dist-rspack'),
     filename: '[name].[contenthash].js',
@@ -64,5 +65,9 @@ module.exports = {
     splitChunks: {
       chunks: 'all',
     },
+    usedExports: true,
+    sideEffects: true,
+    minimize: true,
+    concatenateModules: true
   }
 };
